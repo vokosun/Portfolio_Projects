@@ -1,1 +1,1 @@
-# portfolio_VanessaO
+# Business Analyst Portfolio - Vanessa Okosun
