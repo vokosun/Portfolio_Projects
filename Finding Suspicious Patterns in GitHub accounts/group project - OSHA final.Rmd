@@ -1,0 +1,138 @@
+---
+title: "BDA 601 Group Project - OSHA"
+authors: "Katherine Harmeyer, Milan Sutaria, Vanessa Okosun, & Ishan Achar"
+date: "3/4/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Install stringr package
+install.packages('stringr')
+
+# Optional lines to install magrittr & dplyr packages, if not already done
+#install.packages('magrittr')
+#install.packages('dplyr')
+
+# Load packages into memory
+library('dplyr')
+library('magrittr')
+library('stringr')
+
+# Load data into the variable 'logs'
+logs <- read.csv('account_log_without_labels.csv')
+
+# Convert empty strings to 'NA'
+logs[logs==""]<-NA
+
+# Add 2 columns: 'malicious_account' pre-loaded with FALSE, and 'campaign' pre-loaded with "none"
+logs %<>% mutate(malicious_account=FALSE, campaign='none')
+
+```
+
+```{r}
+# Skipped optional fields - flagged when optional name and/or location fields were left blank
+
+for (i in 1:nrow(logs))
+{
+  if ((is.na(logs[i,'name'])) | (is.na(logs[i,'location'])))
+  {
+    logs[i,'malicious_account'] <- TRUE
+    logs[i,'campaign'] <- 'Skipped optional fields'
+  }
+
+}
+```
+
+
+```{r}
+# Multiple from same IP (checking timestamp differences) - checking for consistent time
+# differences of multiple account registrations from the same IP address.
+
+# Converts created_at column from a character string to a timestamp to a numeric
+logs$created_at <- as.numeric(as.POSIXct(logs$created_at))
+
+# Groups rows by ip_address, then creates a column with values representing the difference
+# in the time from one row to the next (when ip_address is the same)
+logs_diff <- logs%>%group_by(ip_address)%>%mutate(difference=created_at-lag(created_at,default=first(created_at)))
+
+# Displays the frequency of time differences. Most differences only appear once.
+# Besides zero, the most frequent time difference occurs 8 times. It does not appear that
+# there is a large number of bot-created accounts, as indicated by a consistent time difference.
+sort(table(logs_diff$difference), decreasing=TRUE)
+
+
+```
+
+
+```{r}
+# Check: Invalid email - email doesn't match a regular expression that should match MOST valid emails
+# Currently flags emails with + and -, which are uncommon but valid in some systems.
+# Some emails are valid, but not machine-readable (e.g., "katherine at gmail dot com").
+
+for (i in 1:nrow(logs))
+{
+  # str_match returns NA if email doesn't match our regex
+  # Regex borrowed from: https://stackoverflow.com/questions/19341554/regular-expression-in-base-r-regex-to-identify-email-address
+  
+  email_regex <- '^[[:alnum:].-_]+@[[:alnum:].-]+$'
+
+  if (is.na(str_match(logs[i,'email'], email_regex)))
+  {
+    logs[i,'malicious_account'] <- TRUE
+    logs[i,'campaign'] <- 'Bad email'
+  }
+
+}
+```
+
+
+```{r}
+# Missing IP address - flagged when 'NA' in the ip_address field of each row
+
+for (i in 1:nrow(logs))
+{
+  if (is.na(logs[i,'ip_address']))
+  {
+    logs[i,'malicious_account'] <- TRUE
+    logs[i,'campaign'] <- 'Missing IP address'
+  }
+
+}
+
+```
+
+
+
+
+
+```{r}
+# Unusual name entry - flagged when name doesn't contain a space or does contain a number
+
+for (i in 1:nrow(logs))
+{
+  if ((!grepl(" ", logs[i,'name'])) | (grepl("[0-9]",logs[i,'name'])))
+  {
+    logs[i,'malicious_account'] <- TRUE
+    logs[i,'campaign'] <- 'Unusual name entry'
+  }
+
+}
+
+```
+
+
+```{r}
+# Campaign summary - lists the frequency of each campaign flagged above
+
+table(logs$campaign)
+```
+
+
+```{r}
+write.csv(logs,"account_log_output.csv", row.names = FALSE)
+```
+
