@@ -2,7 +2,7 @@
 This Portfolio is a compilation of all the Business Data Analysis projects I have done for academic, self-learning and hobby purposes. This portfolio also highlightes my Achievements, skills, and certificates. It is updated on the regular basis.asis.
 
 - **Email**: [vanessaokosun@gmail.com](vanessaokosun@gmail.com)
-- **LinkedIn**: (https://www.linkedin.com/in/vanessaokosun/)(https://www.linkedin.com/in/vanessaokosun/)
+- **LinkedIn**: [https://www.linkedin.com/in/vanessaokosun/](https://www.linkedin.com/in/vanessaokosun/)
 
 ## Achievements
 - Recipient of Outstanding Master of Engineering - Industrial Engineering Student Award.
