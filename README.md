@@ -1,8 +1,8 @@
 # Business Analyst Portfolio - Vanessa Okosun
-This Portfolio is a compilation of all the Data Science and Data Analysis projects I have done for academic, self-learning and hobby purposes. This portfolio also contains my Achievements, skills, and certificates. It is updated on the regular basis.
+This Portfolio is a compilation of all the Business Data Analysis projects I have done for academic, self-learning and hobby purposes. This portfolio also highlightes my Achievements, skills, and certificates. It is updated on the regular basis.asis.
 
-- **Email**: [archdesai.ad@gmail.com](archdesai.ad@gmail.com)
-- **LinkedIn**: [linkedin.com/archd3sai](https://www.linkedin.com/in/archd3sai/)
+- **Email**: [vanessaokosun@gmail.com](vanessaokosun@gmail.com)
+- **LinkedIn**: [(https://www.linkedin.com/in/vanessaokosun/)]([https://www.linkedin.com/in/vanessaokosun/))
 
 ## Achievements
 - Recipient of Outstanding Master of Engineering - Industrial Engineering Student Award.
