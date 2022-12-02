@@ -40,3 +40,11 @@ In this project, I was consulting for a high-visibility online consumer products
   - Excel
   - Powerpoint
 
+### Who are the best prospects for our term deposit marketing campaign?
+The bank has a product that is underperforming and not bringing in enough revenue. Our goal is to take the data collected by different financial institutions and find the best candidate/prospect for the term deposit. Some other things that we want to try to find out based on data and research is the best channel to reach out to the prospects and if phone marketing the best channel for this marketing campaign?
+#### Tools Used:
+  - Excel
+  - Powerpoint
+  - R 
+
+
