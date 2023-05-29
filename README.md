@@ -55,4 +55,11 @@ Booking data that was collected from the IHG Hotels, including different regions
   - Excel
   - Power BI
 
+### Microsoft vs. Walmart vs. S&P500 Monthly Returns
+A simple linear regression was used to find the highest monthly return between Micorsoft, Walmart and S&P500 (^GSPC). Using excel, frequency distribustion table was created using the summary statistics, an investment opportunity set was created, and the portfolio weights were calculated using the minimum variance portfolio. 
+#### Tools Used:
+  - Excel
+  - Powerpoint
+  - R 
+
 
