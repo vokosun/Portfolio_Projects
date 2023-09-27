@@ -13,11 +13,7 @@ This section showcases my commitment to continuous learning and professional dev
 
 ### Covid's Financial Impact on IHG Hotels
 
-Used booking data from 20202 and previous years to tell the story of how COVID had a financial impact on IHG Hotels. Through the booking datat, i was able to uncover which regions, hotel brand and hotel scale brings in the highest/lowest revenue and books the most rooms by quarter. 
-  #### Tools Used:
-  - Excel
-  - Tableau
-  - SQL
+Explore this project to gain insights into the financial impact of COVID-19 on IHG Hotels. Leveraging booking data from 2020 and previous years, I've crafted a compelling narrative that unveils the pandemic's influence on IHG's revenue streams. Using data analysis tools such as <b>Excel, SQL, and Tableau</b>, I've conducted in-depth examinations to pinpoint the <i>regions, hotel brands, and scales</i> that experienced the <i>highest and lowest revenue, as well as those that booked the most rooms, segmented by quarter<i/>. This project serves as a testament to my proficiency in data analysis and visualization, offering valuable insights into the intersection of the hospitality industry and the pandemic's economic repercussions. Explore the visualizations and analyses to better understand the complex financial dynamics that unfolded during this critical period.
 
 ### Diabetes Over Time
 In the project, I used the data provided by NCD Risk Factor Collaboration to analyze the prevalence of diabetes and the increase over the years in women vs. men in the world. 
