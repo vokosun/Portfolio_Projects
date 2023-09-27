@@ -1,13 +1,12 @@
 # Business Analyst Portfolio - Vanessa Okosun
-This Portfolio is a compilation of all the Business Data Analysis projects I have done through academia, self-learning and hobby purposes. This portfolio also highlightes my Achievements, skills, and certificates. It is updated on the regular basis.
+Welcome to my GitHub page, where I showcase a collection of data analytics projects and certifications that reflect my passion for leveraging data to drive insights and inform decision-making. This repository serves as a dynamic portfolio, highlighting my educational achievements, including certifications from recognized programs like the Thinkful Data Analytics Bootcamp. You'll find a diverse range of projects here, each designed to demonstrate my skills in data analysis, visualization, and problem-solving. Feel free to explore these projects to gain insight into my proficiency and dedication to the field of data analytics.
 
-- **Email**: [vanessaokosun@gmail.com](vanessaokosun@gmail.com)
+- **Email**: [vookosun@gmail.com](vookosun@gmail.com)
 - **LinkedIn**: [https://www.linkedin.com/in/vanessaokosun/](https://www.linkedin.com/in/vanessaokosun/)
 
 ## Certifications
-This repository is mainly to showcase some of the certifications that i have done to gain more knowledge. 
 
-Thinkful's online data analyst program is a 6 months program that prepares me for a career as a data analyst by helping me learn to clean and organize data, uncover patterns and insights, draw meaningful conclusions, and clearly communicate critical findings. I have developed proficiency in Python and its data analysis libraries (Numpy, pandas, Matplotlib), Tableau, and SQL.
+This section showcases my commitment to continuous learning and professional development in the field of data analytics. It includes certifications obtained from reputable programs, such as the Thinkful Data Analytics Bootcamp, which have equipped me with the latest tools and techniques essential for effective data analysis and decision-making. These certifications validate my expertise and proficiency in the dynamic field of data analytics, demonstrating my dedication to staying current with industry trends and best practices.
 
 
 ## Projects
