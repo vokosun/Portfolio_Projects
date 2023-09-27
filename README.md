@@ -29,6 +29,13 @@ The "Depression vs. Drug Use" project delves into the intricate relationship bet
 
 **Endogeneity and Model Comparison:** The project addresses endogeneity by using a simultaneous equation model, comparing the 2SLS and 3SLS approaches. Hausman's specification test is employed to select the more appropriate model.
 
+**Tools Used:**
+
+R
+Excel
+PowerPoint
+SaaS platforms
+
 Through this analysis, the project aims to uncover the complex interplay between depression, demographics, and drug use. It provides valuable insights for healthcare professionals, researchers, and policymakers, contributing to a better understanding of the factors influencing these critical public health issues.
 
 By exploring the correlations, statistical significance, and predictive power presented in this project, one can gain a deeper insight into the bi-directional relationship between depression and drug use and the potential implications for intervention and prevention strategies.
