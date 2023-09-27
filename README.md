@@ -11,6 +11,28 @@ This section showcases my commitment to continuous learning and professional dev
 
 ## Projects
 
+### Depression vs. Drug Use 
+**Description:**
+The "Depression vs. Drug Use" project delves into the intricate relationship between depression and drug use using data obtained from the National Health and Nutrition Survey (NHNS) conducted by the CDC. The NHNS program is responsible for evaluating the nutritional status and overall health of individuals in the United States, producing vital health statistics for the country. This project specifically focuses on data collected during the 2017-2018 survey period, encompassing information on drug use, mental health (depression screener), and demographics.
+
+**Key Objectives:**
+
+**Data Integration:** The project begins by integrating datasets related to drug use, mental health (depression screener), and demographics. These datasets are interconnected through a sequence number, enabling a comprehensive analysis of the factors at play.
+
+**Depression and Drug Use Index:** Two indices are created to categorize individuals based on their levels of depression and drug use. The depression index categorizes individuals into different levels of depression severity, while the drug use index identifies those engaged in specific drug-related behaviors.
+
+**Predictive Modeling:** The primary data mining task is to predict whether a person will become a drug user based on various factors, with depression being a key predictor. Independent variables include depression, gender, race, education, marital status, and poverty ratio, while drug use serves as the dependent variable. The dataset is divided into training and validation sets, allowing for the development and validation of predictive models.
+
+**Statistical Analysis:** The project employs logistic regression to create predictive models. Model 1 assesses the influence of depression, gender, marital status, race, education, and poverty ratio on drug use. Model 2 refines the analysis by considering only the significant variables from Model 1.
+
+**Results and Interpretation:** The project interprets the results, including p-values, variable importance, and odds ratios, to understand the relationships between various factors and drug use. The McFadden's R2 value is calculated to evaluate the predictive power of the model.
+
+**Endogeneity and Model Comparison:** The project addresses endogeneity by using a simultaneous equation model, comparing the 2SLS and 3SLS approaches. Hausman's specification test is employed to select the more appropriate model.
+
+Through this analysis, the project aims to uncover the complex interplay between depression, demographics, and drug use. It provides valuable insights for healthcare professionals, researchers, and policymakers, contributing to a better understanding of the factors influencing these critical public health issues.
+
+By exploring the correlations, statistical significance, and predictive power presented in this project, one can gain a deeper insight into the bi-directional relationship between depression and drug use and the potential implications for intervention and prevention strategies.
+
 ### <u>Covid's Financial Impact on IHG Hotels</u>
 **Description:**
 The "IHG Dashboard - Covid's Financial Impact Analysis" project offers a comprehensive exploration of the financial repercussions of the COVID-19 pandemic on IHG Hotels. By leveraging booking data sourced from 2020 and previous years, this project presents a compelling narrative that unveils the profound influence of the pandemic on IHG's revenue streams. Through the use of data analysis tools such as Excel, SQL, and Power BI, the project conducts detailed examinations to identify the regions, hotel brands, and scales that experienced the highest and lowest revenue, as well as those that booked the most rooms, segmented by quarter.
