@@ -16,20 +16,20 @@ This section showcases my commitment to continuous learning and professional dev
 Explore this project to gain insights into the financial impact of COVID-19 on IHG Hotels. Leveraging booking data from 2020 and previous years, I've crafted a compelling narrative that unveils the pandemic's influence on IHG's revenue streams. Using data analysis tools such as <b>Excel, SQL, and Tableau</b>, I've conducted in-depth examinations to pinpoint the <I> <b>regions, hotel brands, and scales</b> </i> that experienced the <b> <i>highest and lowest revenue, as well as those that booked the most rooms, segmented by quarter</i></b>. This project serves as a testament to my proficiency in data analysis and visualization, offering valuable insights into the intersection of the hospitality industry and the pandemic's economic repercussions. Explore the visualizations and analyses to better understand the complex financial dynamics that unfolded during this critical period.
 
 ### Diabetes Over Time
-Description:
+<u><b>Description:</b></u>
 The "Diabetes Over Time" project offers a comprehensive analysis of diabetes prevalence trends and their evolution over the years, with a specific focus on gender disparities across the world. This analysis is based on data provided by the NCD Risk Factor Collaboration, which serves as a valuable resource for understanding the global health landscape.
 
-Tools Used:
+<u><b>Tools Used:</b></u>
 
-Excel: Excel was utilized for data cleaning, organization, and initial exploratory analysis. It played a pivotal role in preparing the data for further investigation.
+<b>Excel:</b> Excel was utilized for data cleaning, organization, and initial exploratory analysis. It played a pivotal role in preparing the data for further investigation.
 
-PowerPoint: PowerPoint was employed to craft engaging visual presentations that effectively communicate the project's findings. It helped in creating clear and impactful data-driven narratives.
+<b>PowerPoint:</b> PowerPoint was employed to craft engaging visual presentations that effectively communicate the project's findings. It helped in creating clear and impactful data-driven narratives.
 
-Python: Python, a powerful programming language for data analysis, was instrumental in conducting advanced statistical analyses. It allowed for the implementation of complex algorithms and statistical models.
+<b>Python:</b> Python, a powerful programming language for data analysis, was instrumental in conducting advanced statistical analyses. It allowed for the implementation of complex algorithms and statistical models.
 
-Google Colab Notebook: Google Colab provided a cloud-based, collaborative environment for Python coding and analysis. It facilitated seamless collaboration and data exploration.
+<b>Google Colab Notebook:</b> Google Colab provided a cloud-based, collaborative environment for Python coding and analysis. It facilitated seamless collaboration and data exploration.
 
-Word: Microsoft Word played a role in documenting the project's methodologies, results, and insights. It ensured that the project's findings were well-documented and easily accessible.
+<b>Word:</b> Microsoft Word played a role in documenting the project's methodologies, results, and insights. It ensured that the project's findings were well-documented and easily accessible.
 
 The primary objective of this project was to unveil trends in diabetes prevalence and understand how they have changed over time. Of particular interest was the examination of gender-specific variations. By harnessing these analytical tools, the project was able to provide a comprehensive view of diabetes trends, offering valuable insights into the dynamics of this critical health issue on a global scale.
 
