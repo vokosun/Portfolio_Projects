@@ -16,10 +16,10 @@ This section showcases my commitment to continuous learning and professional dev
 Explore this project to gain insights into the financial impact of COVID-19 on IHG Hotels. Leveraging booking data from 2020 and previous years, I've crafted a compelling narrative that unveils the pandemic's influence on IHG's revenue streams. Using data analysis tools such as <b>Excel, SQL, and Tableau</b>, I've conducted in-depth examinations to pinpoint the <I> <b>regions, hotel brands, and scales</b> </i> that experienced the <b> <i>highest and lowest revenue, as well as those that booked the most rooms, segmented by quarter</i></b>. This project serves as a testament to my proficiency in data analysis and visualization, offering valuable insights into the intersection of the hospitality industry and the pandemic's economic repercussions. Explore the visualizations and analyses to better understand the complex financial dynamics that unfolded during this critical period.
 
 ### Diabetes Over Time
-<u><b>Description:</b></u>
+<u> <b>Description:</b> </u>
 The "Diabetes Over Time" project offers a comprehensive analysis of diabetes prevalence trends and their evolution over the years, with a specific focus on gender disparities across the world. This analysis is based on data provided by the NCD Risk Factor Collaboration, which serves as a valuable resource for understanding the global health landscape.
 
-<u><b>Tools Used:</b></u>
+<u> <b>Tools Used:</b> </u>
 
 <b>Excel:</b> Excel was utilized for data cleaning, organization, and initial exploratory analysis. It played a pivotal role in preparing the data for further investigation.
 
