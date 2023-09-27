@@ -13,16 +13,27 @@ This section showcases my commitment to continuous learning and professional dev
 
 ### Covid's Financial Impact on IHG Hotels
 
-Explore this project to gain insights into the financial impact of COVID-19 on IHG Hotels. Leveraging booking data from 2020 and previous years, I've crafted a compelling narrative that unveils the pandemic's influence on IHG's revenue streams. Using data analysis tools such as <b>Excel, SQL, and Tableau</b>, I've conducted in-depth examinations to pinpoint the <I> <b>regions, hotel brands, and scales</b> </i> that experienced the <b> <i>highest and lowest revenue, as well as those that booked the most rooms, segmented by quarter<i/> </b>. This project serves as a testament to my proficiency in data analysis and visualization, offering valuable insights into the intersection of the hospitality industry and the pandemic's economic repercussions. Explore the visualizations and analyses to better understand the complex financial dynamics that unfolded during this critical period.
+Explore this project to gain insights into the financial impact of COVID-19 on IHG Hotels. Leveraging booking data from 2020 and previous years, I've crafted a compelling narrative that unveils the pandemic's influence on IHG's revenue streams. Using data analysis tools such as <b>Excel, SQL, and Tableau</b>, I've conducted in-depth examinations to pinpoint the <I> <b>regions, hotel brands, and scales</b> </i> that experienced the <b> <i>highest and lowest revenue, as well as those that booked the most rooms, segmented by quarter</i> </b>. This project serves as a testament to my proficiency in data analysis and visualization, offering valuable insights into the intersection of the hospitality industry and the pandemic's economic repercussions. Explore the visualizations and analyses to better understand the complex financial dynamics that unfolded during this critical period.
 
 ### Diabetes Over Time
-In the project, I used the data provided by NCD Risk Factor Collaboration to analyze the prevalence of diabetes and the increase over the years in women vs. men in the world. 
-#### Tools Used:
-  - Excel
-  - Powerpoint
-  - Python
-  - Google Colab Notebook 
-  - Word 
+Description:
+The "Diabetes Over Time" project offers a comprehensive analysis of diabetes prevalence trends and their evolution over the years, with a specific focus on gender disparities across the world. This analysis is based on data provided by the NCD Risk Factor Collaboration, which serves as a valuable resource for understanding the global health landscape.
+
+Tools Used:
+
+Excel: Excel was utilized for data cleaning, organization, and initial exploratory analysis. It played a pivotal role in preparing the data for further investigation.
+
+PowerPoint: PowerPoint was employed to craft engaging visual presentations that effectively communicate the project's findings. It helped in creating clear and impactful data-driven narratives.
+
+Python: Python, a powerful programming language for data analysis, was instrumental in conducting advanced statistical analyses. It allowed for the implementation of complex algorithms and statistical models.
+
+Google Colab Notebook: Google Colab provided a cloud-based, collaborative environment for Python coding and analysis. It facilitated seamless collaboration and data exploration.
+
+Word: Microsoft Word played a role in documenting the project's methodologies, results, and insights. It ensured that the project's findings were well-documented and easily accessible.
+
+The primary objective of this project was to unveil trends in diabetes prevalence and understand how they have changed over time. Of particular interest was the examination of gender-specific variations. By harnessing these analytical tools, the project was able to provide a comprehensive view of diabetes trends, offering valuable insights into the dynamics of this critical health issue on a global scale.
+
+Through visualizations, statistical analyses, and data-driven storytelling, "Diabetes Over Time" sheds light on the challenges and opportunities in combating diabetes worldwide. It serves as a testament to the power of data analytics in understanding complex health issues and driving informed decision-making in the field of public health.
   
 ### Finding Suspicious Patterns in GitHub accounts
 Given data that includes log of accounts created on a single day, the goal was to flag the acoounts that seem suspicious or to be created by robots.  A campaign was created that flagged those accounts that appear to have mass creation of accounts to be controlled by a single actor, or small group of actors. 
