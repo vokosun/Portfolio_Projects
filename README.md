@@ -1,8 +1,16 @@
 # Business Analyst Portfolio - Vanessa Okosun
-Welcome to my GitHub page, where I showcase a collection of data analytics projects and certifications that reflect my passion for leveraging data to drive insights and inform decision-making. This repository serves as a dynamic portfolio, highlighting my educational achievements, including certifications from recognized programs like the Thinkful Data Analytics Bootcamp. You'll find a diverse range of projects here, each designed to demonstrate my skills in data analysis, visualization, and problem-solving. Feel free to explore these projects to gain insight into my proficiency and dedication to the field of data analytics.
+Hello! I'm Vanessa Okosun, a passionate and versatile data enthusiast with a unique professional journey. With a background as an Account Executive and Program Manager in the pharmaceutical industry, I've honed my skills in strategic planning, project management, and client engagement. My experience as a Program Analyst Intern at a nonprofit organization broadened my horizons, allowing me to apply data-driven insights to social causes.
 
+Beyond my corporate roles, I've had the privilege of working as an Assistant Teacher at a daycare, fostering a love for education and the nurturing of young minds. These diverse experiences have shaped my analytical mindset and fueled my curiosity for data analytics.
+
+In my GitHub portfolio, you'll find a collection of projects that reflect my commitment to leveraging data to drive informed decisions. Whether it's analyzing pharmaceutical sales trends, optimizing nonprofit operations, or exploring educational data, I approach each project with a blend of analytical rigor and a genuine desire to make a positive impact.
+
+I believe that data has the power to transform industries and drive positive change. Join me on this exciting journey as we explore the world of data analytics together.
+
+## Contact Info
 - **Email**: [vookosun@gmail.com](vookosun@gmail.com)
-- **LinkedIn**: [https://www.linkedin.com/in/vanessaokosun/](https://www.linkedin.com/in/vanessaokosun/)
+- **LinkedIn**
+- Resume
 
 ## Certifications
 
