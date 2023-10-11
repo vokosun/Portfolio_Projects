@@ -1,0 +1,39 @@
+---
+title: "HospitalBillPrediction"
+author: "Vanessa okosun"
+date: '2023-10-11'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+#Load in the data
+```{r}
+insurance <- read.csv("~/Documents/Job Stuff/Portfolio Projects/Hospital Bill Prediction/insurance.csv")
+num_cols <- unlist(lapply(insurance, is.numeric))
+plot(insurance[, num_cols])
+
+```
+
+```{r}
+round(cor(insurance[,num_cols]), 2)
+```
+
+```{r}
+smoker <- as.factor(insurance$smoker)
+sex <- as.factor(insurance$sex)
+region <- as.factor(insurance$region)
+
+boxplot(insurance$charges ~ smoker, main = "smoker")
+boxplot(insurance$charges ~ sex, main = "sex")
+boxplot(insurance$charges ~ region, main = "region")
+```
+
+```{r}
+model1 <- lm(charges ~. , data= insurance)
+summary(model1)
+```
+
