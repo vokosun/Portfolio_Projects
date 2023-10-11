@@ -1,0 +1,320 @@
+---
+title: "Drugs Relationship on Depression"
+author: "Vanessa Okosun"
+date: "2023-02-04"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+LOADING Data
+```{r}
+#install.packages("GGally")
+#install.packages("gridExtra")
+#install.packages("corrplot")
+#install.packages("ggcorrplot")
+#install.packages("fastDummies")
+
+library(readxl)
+library(dplyr)
+library(GGally)
+library(readr)
+library(tidyverse)
+library(ggplot2)
+library(gridExtra)
+library(corrplot) #correlation plot
+library(ggcorrplot) #correlation for categorical
+library(fastDummies) # create dummies variable
+
+DrugOnDep <- read_excel("C:\\Users\\vanes\\iCloudDrive\\Documents\\Grad school\\BDA 650\\Dataset\\BDA_OKOSUN.V_Data.xlsx")
+
+DrugOnDep[] <- lapply(DrugOnDep, as.numeric)
+DrugOnDep <- data.frame(DrugOnDep)
+
+View(DrugOnDep)
+```
+
+DATA STRUCTURE 
+```{r}
+str(DrugOnDep)
+summary(DrugOnDep)
+
+```
+
+GRAPHICAL SUMMARIES PT 1 
+```{r}
+#Lots of children under one that are included in this dataset 
+hist(DrugOnDep$AGEYR)
+
+```
+
+CLEANING DATA
+```{r}
+#remove unimportant columns
+#DrugOnDep <- subset(DrugOnDep, select = -c(RIDEXAGM))
+
+#reduce values in race origin level 0 - other races ;1 - black non-hispanic
+DrugOnDep$Race <- ifelse(DrugOnDep$Race==4,1,0 )
+
+#reduce values in Education level 0 - highschool equiv or less than; 1 - college and above
+DrugOnDep$EDUC <- ifelse(DrugOnDep$EDUC==4 | DrugOnDep$EDUC==5, 1,0 )
+
+#reduce values in Marital level 0 - not married; 1 - married
+DrugOnDep$MARTL <- ifelse(DrugOnDep$MARTL==1, 1,0 )
+
+#reduce values in Income level; 0- under $20,000, 1 - over $20,000
+DrugOnDep$INCOME <- ifelse(DrugOnDep$INCOME<= 4 | DrugOnDep$INCOME == 13, 0, 1 )
+
+
+```
+
+```{r}
+DrugOnDepFinal<- DrugOnDep
+str(DrugOnDepFinal)
+view(DrugOnDepFinal)
+```
+
+
+
+DATA STRUCTURE 
+```{r}
+#install.packages("skimr")
+library(skimr)
+
+skim(DrugOnDepFinal)
+```
+
+Correlation Tests
+```{r}
+library(ggcorrplot)
+cor(DrugOnDepFinal, use = "complete.obs", method = "pearson")
+  
+library(corrplot)
+corrplot(cor(DrugOnDepFinal), method = "color")
+```
+
+
+
+
+GRAPHICAL SUMMARIES PT 1 
+```{r}
+library(ggplot2)
+#new age distribution
+hist(DrugOnDepFinal$AGEYR)
+
+#count of race (1 -	Mexican American, 2	- Other Hispanic, 3-Non-Hispanic White, 4-Non-Hispanic Black, 5-Other Race - Including Multi-Racial)
+ggplot(DrugOnDepFinal,aes(x=factor(Race)))+ geom_bar(position="dodge")
+
+#count of gender (1-MALE, 2-Female)
+ggplot(DrugOnDepFinal,aes(x=factor(GENDER)))+ geom_bar(position="dodge")
+
+#count of education
+ggplot(DrugOnDepFinal,aes(x=factor(EDUC)))+ geom_bar(position="dodge")
+
+#count of Marital status
+ggplot(DrugOnDepFinal,aes(x=factor(MARTL)))+ geom_bar(position="dodge")
+
+```
+
+GRAPHICAL SUMMARIES PT 2
+```{r}
+#Number of people depressed 
+ggplot(DrugOnDepFinal,aes(x=factor(Depressed)))+ geom_bar(position="dodge")
+
+#Number of people with drug use
+ggplot(DrugOnDepFinal,aes(x=factor(Drug_user)))+ geom_bar(position="dodge")
+
+
+```
+
+
+LOGISTIC REGRESSION - MODEL 1 
+```{r}
+library(AICcmodavg)
+
+#partition data 
+set.seed(2)
+train.index <- sample(c(1:dim(DrugOnDepFinal)[1]), dim(DrugOnDepFinal)[1]*0.7)
+train.df <- DrugOnDepFinal[train.index, ]
+valid.df <- DrugOnDepFinal[-train.index, ]
+
+#run logistic regression
+logit.reg <- glm(Drug_user~Depressed+ GENDER+ Race+ EDUC+ MARTL+ POVRAT, data = train.df, family = 'binomial')
+options(scipen=999)
+summary(logit.reg)
+
+exp(coef(logit.reg))
+
+
+```
+
+MODEL 2
+```{r}
+logit.reg2 <- glm(Drug_user~Depressed+ GENDER+ MARTL+ Race, data = train.df, family = 'binomial')
+options(scipen=999)
+summary(logit.reg2)
+
+exp(coef(logit.reg2))
+
+```
+MODEL Comparison
+K: The number of parameters in the model.
+AICc: The AIC value of the model. model that explains the most variation in the data has lower value 
+Delta_AICc: The difference between the AIC of the best model compared to the current model being compared.
+AICcWt: The proportion of the total predictive power that can be found in the model.
+Cum.Wt: The cumulative sum of the AIC weights.
+LL: The log-likelihood of the model. This tells us how likely the model is, given the data we used.
+
+MODEL 2 Offers a better fit 
+```{r}
+#List of models 
+models <- list(logit.reg, logit.reg2)
+
+#model names 
+mod.names <- c('dep.gen.rac.educ.martl.pov','dep.gen.martl' )
+
+#Calculate AIC 
+aictab(cand.set = models, modnames = mod.names)
+```
+
+ACCESSING THE MODEL 
+ McFadden’s R2, which ranges from 0 to just under 1. Values close to 0 indicate that the model has no predictive power. In practice, values over 0.40 indicate that a model fits the data very well.
+```{r}
+library(caret)
+
+#PREDICTIVE POWER
+pscl::pR2(logit.reg2)["McFadden"]
+pscl::pR2(logit.reg)["McFadden"]
+
+#COMPUTE IMPORTANCE OF EACH VARIABLE 
+caret::varImp(logit.reg)
+
+#VIF - VALUE OVER 5 IS SEVERE multicollinearity
+car::vif(logit.reg2)
+```
+
+MAKE Predictions
+
+a Depressed status of “Yes” has a probability of being a drug user of .3796. Conversely, an individual with the same gender, race, martl, educ, and poverty rate but with a depression status of “No” has a probability of being a drug user of 0.2414
+```{r}
+
+#define two individuals
+new <- data.frame(GENDER = 2, Race = 1, MARTL = 0, EDUC = 0, POVRAT = 2.17, Depressed = c(1, 0))
+
+#Predicted probability 
+predict(logit.reg2, new, type = "response")
+
+```
+
+That metric ranges from 0.50 to 1.00, and values above 0.80 indicate that the model does a good job in discriminating between the two categories which comprise our target variable. 
+```{r}
+
+library(pROC)
+# Compute AUC for predicting Class with the variable CreditHistory.Critical
+f1 = roc(Drug_user ~ Depressed, data=valid.df) 
+plot(f1, col="red")
+
+library(ROCR)
+# Compute AUC for predicting Class with the model
+prob <- predict(logit.reg2, newdata=valid.df, type="response")
+pred <- prediction(prob, valid.df$Drug_user)
+perf <- performance(pred, measure = "tpr", x.measure = "fpr")
+plot(perf)
+auc <- performance(pred, measure = "auc")
+auc <- auc@y.values[[1]]
+auc
+
+
+```
+
+MODEL DIAGNOSTIC
+```{r}
+Predicted <- predict(logit.reg2, valid.df, type = 'response')
+
+u <- union(Predicted, valid.df$Drug_user)
+t <- table(factor(Predicted, u),factor(valid.df$Drug_user, u))
+
+confusionMatrix(t)
+
+class
+```
+
+
+LIFT CHART & DECILE-WISE LIFT CHART
+```{r}
+#install.packages('gains')
+library(caret)
+library(gains)
+gain <- gains(valid.df$Drug_user, Predicted, groups= 100)
+
+#LIFT CHART 
+plot(c(0, gain$cume.pct.of.total*sum(valid.df$Drug_user))~c(0,gain$cume.obs),
+xlab="# cases", ylab="Cumulative", main="", type="l")
+lines(c(0,sum(valid.df$Drug_user))~c(0, dim(valid.df)[1]), lty=2)
+
+```
+
+
+#Simultaneous Equations Model#
+
+the endogenous variables are  $Depression$ and  $Druguser$. 
+
+the exogenous variables are the indicator variables for demographics of the user.
+
+the identification variable for the drug user equation are gender, martial status and income , which will only show up in the depression equation but not in the drug user equation; 
+
+the identification variables for the depression equation will be  drug prices, as none of them show up in the drug user equation.
+
+
+```{r}
+#Creating Drug Prices variables 
+DrugOnDepFinal$Marij_price <- ifelse(DrugOnDepFinal$DUQ200=="1",7.38, 0)
+DrugOnDepFinal$Cocaine_price <- ifelse(DrugOnDepFinal$DUQ250=="1",84.00, 0)
+DrugOnDepFinal$Heroin_price <- ifelse(DrugOnDepFinal$DUQ290=="1",69.00, 0)
+DrugOnDepFinal$Meth_price <- ifelse(DrugOnDepFinal$DUQ330=="1",40.00, 0)
+
+view(DrugOnDepFinal)
+
+```
+
+
+```{r}
+#install.packages('systemfit')
+library(systemfit)
+
+DrugOnDep.DU <- Drug_user~Depressed+Marij_price+Cocaine_price+Heroin_price+Meth_price
+DrugOnDep.Dep <- Depressed ~ Drug_user+GENDER+MARTL+INCOME
+
+DrugOnDep.eqs <- list(DrugOnDep.DU,DrugOnDep.Dep)
+DrugOnDep.ivs <- ~Marij_price+Cocaine_price+Heroin_price+Meth_price+GENDER+MARTL+INCOME
+DrugOnDep2SLS <-systemfit(DrugOnDep.eqs, method= "2SLS", 
+                          inst=DrugOnDep.ivs, data= DrugOnDepFinal)
+
+summary(DrugOnDep2SLS)
+
+```
+
+
+```{r}
+DrugOnDep3SLS <- systemfit(DrugOnDep.eqs, method="3SLS", 
+              inst=DrugOnDep.ivs, data=DrugOnDepFinal)
+summary(DrugOnDep3SLS)
+```
+
+Hausman specification test
+```{r}
+h <- hausman.systemfit(DrugOnDep2SLS, DrugOnDep3SLS)
+print(h)
+```
+X and Y (Depression and Drug user) are dependent of each other. Each variable can influence the other. This model helps correct for simultaneity
+ 
+Based on the 2SLS model, the price of the 4 different drugs(marijuana, heroin, cocaine and meth) are very significant in the prediction of being a drug user.
+
+In comparison, gender, marital status and income are also significant factor in the influence of depression.
+
+Hausman specification test tells me to reject the 3SLS because the 2SLS is better. 
+
