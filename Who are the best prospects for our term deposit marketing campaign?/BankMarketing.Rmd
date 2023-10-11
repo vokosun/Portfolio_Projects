@@ -1,0 +1,950 @@
+---
+title: "Bank Marketing"
+author: "Vanessa okosun"
+date: '2023-10-11'
+output: html_document
+---
+
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+install.packages("GGally")
+install.packages("scales")
+install.packages("ggcorrplot")
+install.packages("fastDummies")
+package.installed <- c("readr", "tidyverse", "ggplot2")
+install.packages(package.installed, dependencies = TRUE)
+
+library(GGally)
+```
+
+```{r}
+library(readr)
+library(tidyverse)
+```
+
+
+```{r}
+library(ggplot2)
+library(caret)
+```
+
+
+```{r}
+library(dplyr)
+library(gridExtra)
+```
+
+```{r}
+library(corrplot) #correlation plot
+```
+
+```{r}
+library(ggcorrplot) #correlation for categorical
+library(fastDummies) # create dummies variable
+```
+
+
+BUSINESS QUESTION
+Bank wants to start a new marketing campaign but it wants to determine which prospect to target for its banking service
+
+The objective is to use data mining techniques to classify which prospects are likely to apply for loan
+
+LOAD DATA
+```{r}
+BMarketing <- read.csv('/Users/vanessaokosun/Documents/Job Stuff/Portfolio Projects/Bank Marketing/Banking Marketing Data/data.csv')
+```
+
+DATA STRUCTURE
+Banking Marketing dataset has 41188 observations and 21 variables
+```{r}
+names(BMarketing)
+```
+
+```{r}
+str(BMarketing)
+```
+
+```{r}
+#dim(BMarketing)
+BMarketing.na <- na.omit(BMarketing)
+dim(BMarketing.na)
+```
+
+
+Change response var y to num
+```{r}
+BMarketing$y = ifelse(BMarketing$y=='yes',1,0)
+head(BMarketing)
+```
+
+Basic Descriptive stats
+Stats for numeric variables
+```{r}
+library(psych)
+```
+
+```{r}
+summary(BMarketing)
+```
+
+```{r}
+describe(BMarketing)
+```
+ 
+```{r}
+#install.packages("skimr")
+library(skimr)
+
+skim(BMarketing)
+```
+
+Stats for categorical variables
+```{r}
+install.packages("jmv")
+library("jmv")
+```
+
+```{r}
+BMarketing %>%
+  select(job, marital, education, default, housing, loan, contact, month, day_of_week, poutcome) %>%
+  descriptives(freq = TRUE)
+```
+
+VISUALIZATION
+```{r}
+#
+ggplot(BMarketing, aes(x = marital, fill = default))+ 
+  geom_bar(stat="count", width=0.7)+
+    theme(axis.text.x=element_text(angle=35,hjust=1))+
+    ggtitle("Default by marital status")
+```
+
+```{r}
+ggplot(BMarketing, aes(x = education, fill = poutcome))+ 
+  geom_bar(stat="count", width=0.7)+
+    theme(axis.text.x=element_text(angle=35,hjust=1))+
+    ggtitle("Previous Campaign Outcome by education")
+```
+
+```{r}
+ggplot(BMarketing, aes(x = job, fill = job))+ 
+  geom_bar(stat="count", width=0.7)+
+    theme(axis.text.x=element_text(angle=35,hjust=1))+
+    ggtitle("Previous Campaign Outcome by job")
+```
+
+CORRELATION ANALYSIS
+CREATE NUMERIC DATASET FOR CORRELATION
+```{r}
+BMarketing.numer <- Filter(is.numeric, BMarketing)
+
+names(BMarketing.numer)
+```
+
+```{r}
+cor(BMarketing.numer, use = "complete.obs", method = "pearson")
+```
+
+```{r}
+library(corrplot)
+corrplot(cor(BMarketing.numer), method = "color")
+```
+
+```{r}
+library(ggcorrplot)
+ggcorrplot(cor(BMarketing.numer),
+            hc.order = TRUE, 
+           type = "lower",
+           lab = TRUE)
+```
+
+Variables to exclude
+```{r}
+to.drop <- c("pdays", "nr.employed", "age", "cons.conf.idx", "campaign", "euribor3m")
+to.drop
+```
+
+Dataset BMarketing.V1 exclude correlated variables
+```{r}
+to.drop <- c("pdays", "nr.employed", "age", "cons.conf.idx", "campaign", "euribor3m")
+
+BMarketing.V1 <- BMarketing[ , -which(names(BMarketing) %in% to.drop)]
+
+names(BMarketing.V1)
+```
+
+```{r}
+write.csv(BMarketing,'BMarketing.V1.csv')
+
+
+str(BMarketing.V1)
+```
+
+Transform character variables to factors
+BMarketing.V2 dataset contains categorical variable that have been factorized
+```{r}
+#convert to factor
+library(data.table)
+```
+
+```{r}
+copy.BMarketing.V1 <- copy(BMarketing.V1)
+
+cols <- c("job", "marital", "education", "default", "housing", "loan","contact", "month", "day_of_week", "poutcome", "y" )
+BMarketing.V2 <- BMarketing.V1[cols] <- lapply(BMarketing.V1[cols], factor)
+
+#BMarketing.V2$y <- ifelse(BMarketing.V2$y== 1, "yes", "no")
+
+#BMarketing.V2$y <- as.factor(BMarketing.V2$y)
+
+write.csv(BMarketing.V1,'BMarketing.V2.csv')
+
+str(BMarketing.V2)
+```
+
+Reduce dimensionlatity of job
+```{r}
+# recoding job
+BMarketing.V2$job1 <- case_when(
+      BMarketing.V2$job == "unknown" ~ "unconventional",
+      BMarketing.V2$job == "unemployed" ~ "unconventional",
+      BMarketing.V2$job == "entrepreneur" ~ "unconventional",
+      BMarketing.V2$job == "retired" ~ "unconventional",
+      BMarketing.V2$job == "housemaid" ~ "unconventional",
+      BMarketing.V2$job == "self-employed" ~ "unconventional",
+      BMarketing.V2$job == "student" ~ "unconventional",
+      BMarketing.V2$job == "blue-collard" ~ "blue-collar",
+      BMarketing.V2$job == "technician" ~ "blue-collar",
+      BMarketing.V2$job == "services" ~ "blue-collar",
+      TRUE ~ "white-collar")
+                                
+ BMarketing.V2$job1 <- as.factor(BMarketing.V2$job1)                           
+ str(BMarketing.V2)
+```
+
+Recode marital
+```{r}
+# Recode marital status
+BMarketing.V2$marital1 <- case_when(BMarketing.V2$marital == "divorced" ~ "single",
+                            BMarketing.V2$marital == "unknown" ~ "single",
+                            BMarketing.V2$marital == "single" ~ "single",
+                            TRUE ~ "married")
+
+BMarketing.V2$marital1 <- as.factor(BMarketing.V2$marital1)
+
+BMarketing.V2 <- as.data.frame(BMarketing.V2)
+
+str(BMarketing.V2)
+```
+
+recode default
+```{r}
+# Recode default
+BMarketing.V2$default1 <- case_when(BMarketing.V2$default == "unknown" ~ "no",
+                            BMarketing.V2$default == "no" ~ "no",
+                            TRUE ~ "yes")
+
+BMarketing.V2$default1 <- as.factor(BMarketing.V2$default1)
+```
+
+recode housing to merge unknown to no
+```{r}
+BMarketing.V2$housing1 <- case_when(BMarketing.V2$housing == "unknown" ~ "no",
+                            BMarketing.V2$housing == "no" ~ "no",
+                            TRUE ~ "yes")
+
+BMarketing.V2$housing1 <- as.factor(BMarketing.V2$housing1)
+
+str(BMarketing.V2)
+```
+
+```{r}
+pt1 <-ggplot(data=BMarketing.V2, aes(x=marital, fill=marital))+
+           geom_bar()+
+    theme(axis.text.x=element_text(angle=35,hjust=1))+
+    ggtitle("Marital")
+
+pt2 <- ggplot(data=BMarketing.V2, aes(x= marital1, fill= marital1))+
+           geom_bar()+
+    theme(axis.text.x=element_text(angle=35,hjust=1))+
+    ggtitle("Recoded Marital")
+grid.arrange(pt1,pt2, ncol=2)
+```
+
+recode loan
+```{r}
+BMarketing.V2$loan1 <- case_when(BMarketing.V2$loan == "unknown" ~ "no",
+                               BMarketing.V2$loan == "no" ~ "no",
+                               TRUE ~ "yes")
+                    
+BMarketing.V2$loan1 <- as.factor(BMarketing.V2$loan1)
+str(BMarketing.V2)
+```
+
+Recode housing
+```{r}
+#recode Housing
+BMarketing.V2$housing1 <- case_when(BMarketing.V2$housing == "unknown" ~ "no",
+                            BMarketing.V2$housing == "no" ~ "no",
+                            TRUE ~ "yes")
+BMarketing.V2$housing1 <- as.factor(BMarketing.V2$housing)
+
+str(BMarketing.V2)
+```
+
+Recode education
+```{r}
+BMarketing.V2$education1 <- case_when(
+      BMarketing.V2$education == "unknown" ~ "noCollege",
+      BMarketing.V2$education == "basic.4y" ~ "noCollege",
+      BMarketing.V2$education == "basic.6y" ~ "noCollege",
+      BMarketing.V2$education == "basic.9y" ~ "noCollege",
+      BMarketing.V2$education == "illiterate" ~ "noCollege",
+      BMarketing.V2$education == "high.school" ~ "noCollege",
+      BMarketing.V2$education == "professional.course" ~ "noCollege",
+      TRUE ~ "College.dg")
+BMarketing.V2$education1 <- as.factor(BMarketing.V2$education1)
+
+str(BMarketing.V2)
+```
+
+```{r}
+table(BMarketing.V2$month)
+```
+
+```{r}
+pt1 <-ggplot(data=BMarketing.V2, aes(x=education, fill= education))+
+           geom_bar()+
+    theme(axis.text.x=element_text(angle=35,hjust=1))+
+    ggtitle("Education")
+
+pt2 <- ggplot(data=BMarketing.V2, aes(x= education1, fill= education1))+
+           geom_bar()+
+    theme(axis.text.x=element_text(angle=35,hjust=1))+
+    ggtitle("Recoded Education")
+grid.arrange(pt1,pt2, ncol=2)
+```
+
+```{r}
+#library(forcats)
+pt1 <- ggplot(data=BMarketing.V2, aes(x=job1, fill=poutcome))+
+           geom_bar()+
+    theme(axis.text.x=element_text(angle=35,hjust=1))+
+    ggtitle("Loan Success by profession")
+
+pt2 <- #library(forcats)
+ggplot(data=BMarketing.V2, aes(x=education1, fill=poutcome))+
+           geom_bar()+
+    theme(axis.text.x=element_text(angle=35,hjust=1))+
+    ggtitle("Loan Success by education")
+grid.arrange(pt1,pt2, ncol=2)
+```
+
+recoding month
+```{r}
+BMarketing.V2$month1 <- case_when(
+      
+      BMarketing.V2$month == "apr" ~ "Q2",
+      BMarketing.V2$month == "may" ~ "Q2",
+      BMarketing.V2$month == "jun" ~ "Q2",
+      BMarketing.V2$month == "jul" ~ "Q3",
+      BMarketing.V2$month == "aug" ~ "Q3",
+      BMarketing.V2$month == "sep" ~ "Q3",
+      TRUE ~ "Q4")
+BMarketing.V2$month1 <- as.factor(BMarketing.V2$month1)
+
+str(BMarketing.V2)
+```
+
+```{r}
+# pt1 <-ggplot(data=BMarketing.V2, aes(x=month1, fill= y))+
+#            geom_bar()+
+#     theme(axis.text.x=element_text(angle=35,hjust=1))+
+#     ggtitle("Current Campaign Result")
+# 
+# pt2 <- ggplot(data=BMarketing1, aes(x= poutcome, fill= poutcome))+
+#            geom_bar()+
+#     theme(axis.text.x=element_text(angle=35,hjust=1))+
+#     ggtitle("Past Campaign Result")
+# grid.arrange(pt1,pt2, ncol=2)
+```
+
+BMarketing.V3 remove original var that have been recoded
+```{r}
+# BMarketing.V3 <- within(BMarketing.V2, rm(job, marital,loan,housing,education,month, default))
+# 
+# write.csv(BMarketing.V2, "BMarketing.V3")
+# 
+# BMarketing.V3 <- as.data.frame(BMarketing.V3)
+# str(BMarketing.V3)
+```
+
+Change order of col to put target var: y first
+```{r}
+# BMarketing.V3.1 <- BMarketing.V3[ ,c(4,1,2,3,5,6,7,8,9,10,11)]
+# 
+# write.csv(BMarketing.V3, "Bmarketing.V3.1")
+# 
+# BMarketing.V3.1$y <- ifelse(BMarketing.V3.1$y== 1, "yes", "no")
+# BMarketing.V3.1$y  <- as.factor(BMarketing.V3.1$y)
+# 
+# 
+# str(BMarketing.V3.1)
+```
+
+Dummy variables
+```{r}
+# library(fastDummies)
+# 
+# BMarketing.V3.1.dum <- dummy_cols(BMarketing.V3.1, select_columns = c("default1", "contact","day_of_week", "poutcome", "job1", "marital1", "loan1", "housing1", "education1", "month1"), remove_first_dummy = T)
+# 
+# BMarketing.V3.1.dum$y <- ifelse(BMarketing.V3.1.dum$y == "yes", 1, 0)
+# 
+# str(BMarketing.V3.1.dum)
+# 
+# BMarketing.V3.1.dum1 <- within(BMarketing.V3.1.dum, rm(default1, contact,day_of_week, poutcome,job1,marital1,loan1, housing1,education1, month1))
+# 
+# BMarketing.V3.1.dum1$y <- ifelse(BMarketing.V3.1.dum1$y== "yes", 1, 0)
+# 
+# #write.csv(BMarketing.V3.1.dum, "BMarketing.V3.dum1")
+# 
+# 
+# 
+# str(BMarketing.V3.1.dum1)
+```
+
+```{r}
+# BMarketing.V3.1$y <- ifelse(BMarketing.V3.1$y== 1, "yes", "no")
+# BMarketing.V3.1$y  <- as.factor(BMarketing.V3.1$y)
+# 
+# 
+# str(BMarketing.V3.1)
+```
+
+```{r}
+#prop.table(table(BMarketing1$y))
+
+```
+
+Proportion of approval:
+87% rejected to 13% acceptance. Imbalance in the dataset, we need oversampling to balance the dataset to avoid bias in our model
+
+MODELS
+
+MODEL 1: KNN
+```{r}
+## BMarketing3 subset of numeric
+# 
+# str(BMarketing.numer)
+# num.excl <- c("age", "campaign", "pdays", "emp.var.rate", "cons.price.idx", "euribor3m", "nr.employed")
+# 
+# BMarketing.numer1 <- BMarketing.numer[ , -which(names(BMarketing.numer) %in% num.excl)] #excl high corr var
+# 
+# str(BMarketing.numer1)
+# 
+# head(BMarketing.numer1)
+```
+
+```{r}
+
+# library(class)
+# library(caret)
+# library(FNN)
+# 
+# set.seed(31)
+# 
+# #Partition the data
+# BMk.train.index <- sample(row.names(BMarketing.V3.1.dum1), 0.6* dim(BMarketing.V3.1.dum1)[1])
+# BMk.valid.index <- setdiff(row.names(BMarketing.V3.1.dum1), BMk.train.index)
+# BMk.train <- BMarketing.V3.1.dum1[BMk.train.index, ]
+# BMk.valid <- BMarketing.V3.1.dum1[BMk.valid.index, ]
+# 
+# class(BMk.valid$y)
+# 
+# BMk.train[, -1] <-predict( BMk.train[ ,-1])
+# BMk.valid[, -1] <- predict( BMk.valid[, -1])
+# BMarketing.V3.1.dum1[ , -1] <- predict( BMarketing.numer1[ , -1])
+# options(scipen=999, digits=5)
+# 
+# str(BMk.train)
+
+#initialized the normalized training, validation and full dataset
+# BMk.train.norm <- BMk.train
+# BMk.valid.norm <- BMk.valid
+# BMarketing.numer1.norm <- BMarketing.numer1
+
+# tail(BMarketing.numer1)
+
+#scale the training, validation and full dataset
+#norm.k.values <- preProcess(BMk.train[, 1:3], method = c("center","scale"))
+
+#BMk.train.norm[, -4] <-predict(norm.k.values, BMk.train[ ,-4])
+#BMk.valid.norm[, -4] <- predict(norm.k.values, BMk.valid[, -4])
+#BMarketing.numer1.norm[ , -4] <- predict(norm.k.values, BMarketing.numer1[ , -4])
+#options(scipen=999, digits=5)
+                                          
+#initialize k and accuracy
+#k.accuracy.df <- data.frame(k= seq(1,10,1), RMSE=rep(0,10))
+
+#knn for different k on validation
+
+# #for(i in 1:10) {
+#  # BM.knn.pred <- knn(BMk.train.norm[, 1:3],
+#                      BMk.valid.norm[, 1:3], 
+#                      cl = BMk.train.norm[, 4], k = i)
+#  # k.accuracy.df[i, 2] <- confusionMatrix(factor(BM.knn.pred), factor(BMk.valid.norm[, 4]))$overall[1]
+#}
+
+#str(BMk.train.norm)
+#str(BMk.train.norm)
+
+#confusionMatrix(factor(BM.knn.pred), factor(BMk.valid.norm[, 4]))
+
+# for(i in 1:10) {
+#     BM.knn.pred <- class::knn(BMk.train.norm[ ,-4],
+#                            test = BMk.valid.norm[, -4],
+#                            cl = BMk.train.norm$y, k=i)
+#     k.accuracy.df[i,2] <- RMSE(as.numeric(as.character(BM.knn.pred)), BMk.valid.norm$y)
+# }
+# 
+# k.accuracy.df
+# 
+# newHouse.df <- data.frame(duration = 239, previous=1, cons.conf.idex=-50.8)
+#newHouse1.df <- data.frame(duration = 189, previous=0, cons.conf.idx= -50.8)
+```
+
+For k= 5 accuracy is accuracy of 0.9027. We get better accuracy with k=5, with k been in the middle to avoid overfitting
+```{r}
+# confusionMatrix(factor(BM.knn.pred), factor(BMk.valid.norm[, 4]))
+```
+
+MODEL 2: LOGISTIC REGRESSION
+```{r}
+# str(BMarketing.V3.1)
+```
+
+partition data for logistic reg
+```{r}
+# set.seed(51)
+# BMl.train.index <- sample(row.names(BMarketing.V3.1), 0.6* dim(BMarketing.V3.1)[1])
+# BMl.valid.index <- setdiff(row.names(BMarketing.V3.1), BMl.train.index)
+# BMl.train <- BMarketing.V3.1[BMl.train.index, ]
+# BMl.valid <- BMarketing.V3.1[BMl.valid.index, ]
+```
+
+Logistic reg
+```{r}
+# BM.V3.1.logitlm <- glm(y ~ ., data=BMl.train, family=binomial(link="logit"), na.action = na.exclude)
+# options(scipen=999)
+# 
+# summary(BM.V3.1.logitlm)
+```
+
+```{r}
+# round(data.frame(summary(BM.V3.1.logitlm)$coefficients, odds = exp(coef(BM.V3.1.logitlm))),5)
+```
+
+with a cut off of 0.5, our model accurately predicted that our 5 record as no good prospect for term deposit
+```{r}
+# BM.V3.logit.reg.pred <- predict(BM.V3.1.logitlm, BMl.valid [, -1], type = "response")
+# 
+# # first 5 actual and predicted records
+# data.frame(actual = BMl.valid$y[1:5], predicted = BM.V3.logit.reg.pred[1:5])
+# 
+```
+
+```{r}
+# library(gains)
+# dim(BMl.valid)
+# 
+# length(BM.V3.logit.reg.pred)
+# 
+# BMl.valid$y <- ifelse(BMl.valid$y== "yes", 1, 0)
+# 
+# BM.gain <- gains(BMl.valid$y, BM.V3.logit.reg.pred, groups=10)
+# # plot lift chart
+# plot(c(0,BM.gain$cume.pct.of.total*sum(BMl.valid$y))~c(0,BM.gain$cume.obs),
+# xlab="# cases", ylab="Cumulative", main="", type="l")
+# lines(c(0,sum(BMl.valid$y))~c(0, dim(BMl.valid)[1]), lty=2)
+```
+
+```{r}
+# # compute deciles and plot decile-wise chart
+# heights <- BM.gain$mean.resp/mean( BMl.valid$y)
+# midpoints <- barplot(heights, names.arg = BM.gain$depth, ylim = c(0, 9),
+#                      xlab = "Percentile", ylab = "Mean Response", main = "Decile-wise lift chart")
+# # add labels to columns
+# text(midpoints, heights+0.5, labels=round(heights, 1), cex = 0.8)
+```
+
+Confusion matrix
+```{r}
+# library(caret)
+# BM.V3.logit.reg.pred <- predict(BM.V3.1.logitlm, BMl.valid [, -1], type = "response")
+# 
+# BM.V3.logit.reg.pred2<-ifelse(BM.V3.logit.reg.pred > 0.5, 1, 0)
+# 
+# confusionMatrix (as.factor(BM.V3.logit.reg.pred2), as.factor(BMl.valid$y), positive = '1')
+```
+
+Naive Bayes
+```{r}
+# str(BMarketing.V3.1)
+```
+
+training and validation set for NB
+```{r}
+# set.seed(154)
+# BMnb.train.index <- sample(row.names(BMarketing.V3.1), 0.6* dim(BMarketing.V3.1)[1])
+# BMnb.valid.index <- setdiff(row.names(BMarketing.V3.1), BMnb.train.index)
+# BMnb.train <- BMarketing.V3.1[BMnb.train.index, ]
+# BMnb.valid <- BMarketing.V3.1[BMnb.valid.index, ]
+```
+
+fit the model
+```{r}
+# 
+# library(e1071)
+# BM.nb <- naiveBayes(y~ .,data=BMnb.train)
+# BM.nb
+```
+
+```{r}
+# pred.tr.class <- predict(BM.nb, newdata=BMnb.train, type="class")
+# 
+# confusionMatrix(pred.tr.class, BMnb.train$y)
+# 
+```
+
+```{r}
+# pred.vl.class <- predict(BM.nb, newdata=BMnb.valid, type="class")
+# 
+# pred.vl.prob <- predict(BM.nb, newdata=BMnb.valid, type="raw")
+# 
+# confusionMatrix(pred.vl.class, BMnb.valid$y)
+```
+
+```{r}
+
+# library(gains)
+# 
+# str(BMarketing.V3.1)
+# 
+# BMarketing.V3.1$y <- ifelse(BMarketing.V3.1$y == 1, "yes","no")
+# 
+# BMarketing.V3.1$y <- as.factor(BMarketing.V3.1$y)
+# 
+# nb.gain <- gains(ifelse(BMnb.valid$y=="no",0,1), pred.vl.prob[,1], groups=100)
+# 
+# #nb.gain <- gains(pred.vl.prob[,1], groups=100)
+# 
+# plot(c(0,nb.gain$cume.pct.of.total*sum(BMnb.valid$y=="no"))~c(0,nb.gain$cume.obs), 
+#      xlab="# cases", ylab="Cumulative", main="", type="l")
+# lines(c(0,sum(BMnb.valid$y=="no"))~c(0, dim(BMnb.valid)[1]), lty=2)
+```
+
+```{r}
+# compute deciles and plot decile-wise chart
+# heights <- nb.gain$mean.resp/mean( BMnb.valid$y)
+# midpoints <- barplot(heights, names.arg = nb.gain$depth, ylim = c(0, 9),
+#                      xlab = "Percentile", ylab = "Mean Response", main = "Decile-wise lift chart")
+# # add labels to columns
+# text(midpoints, heights+0.5, labels=round(heights, 1), cex = 0.8)
+```
+
+OVERSAMPLING
+```{r}
+# str(BMarketing.V1)
+```
+
+```{r}
+# str(bmarketing.v1)
+```
+
+Recode variable
+```{r}
+#recode marital
+
+bmarketing.v1$marital <- case_when(bmarketing.v1$marital == "divorced" ~ "divorced",
+                            bmarketing.v1$marital == "unknown" ~ "single",
+                            bmarketing.v1$marital == "single" ~ "single",
+                            TRUE ~ "married")
+
+bmarketing.v1$marital <- as.factor(bmarketing.v1$marital)
+
+bmarketing.v1 <- as.data.frame(bmarketing.v1)
+
+str(bmarketing.v1)
+```
+
+```{r}
+## recode loan
+bmarketing.v1$loan <- case_when(bmarketing.v1$loan == "unknown" ~ "no",
+                               bmarketing.v1$loan == "no" ~ "no",
+                               TRUE ~ "yes")
+                    
+bmarketing.v1$loan <- as.factor(bmarketing.v1$loan)
+str(bmarketing.v1)
+```
+
+```{r}
+## recode default
+bmarketing.v1$default <- case_when(bmarketing.v1$default == "unknown" ~ "no",
+                            bmarketing.v1$default == "no" ~ "no",
+                            TRUE ~ "yes")
+
+bmarketing.v1$default <- as.factor(bmarketing.v1$default)
+
+
+###recode job
+bmarketing.v1$job <- case_when(
+      bmarketing.v1$job == "unknown" ~ "unemployed",
+      bmarketing.v1$job == "unemployed" ~ "unemployed",
+      bmarketing.v1$job == "entrepreneur" ~ "entrepreneur",
+      bmarketing.v1$job == "retired" ~ "retired",
+      bmarketing.v1$job == "housemaid" ~ "housemaid",
+      bmarketing.v1$job == "self-employed" ~ "self-employed",
+      bmarketing.v1$job == "student" ~ "student",
+      bmarketing.v1$job == "blue-collard" ~ "blue-collar",
+      bmarketing.v1$job == "technician" ~ "blue-collar",
+      bmarketing.v1$job == "services" ~ "blue-collar",
+      TRUE ~ "white-collar")
+                                
+ bmarketing.v1$job <- as.factor(bmarketing.v1$job) 
+ 
+ str(bmarketing.v1)
+```
+
+```{r}
+ #recode housing
+ bmarketing.v1$housing <- case_when(bmarketing.v1$housing == "unknown" ~ "no",
+                            bmarketing.v1$housing == "no" ~ "no",
+                            TRUE ~ "yes")
+bmarketing.v1$housing <- as.factor(bmarketing.v1$housing)
+
+str(bmarketing.v1)
+```
+
+```{r}
+## recoding education
+bmarketing.v1$education <- case_when(
+      bmarketing.v1$education == "unknown" ~ "noCollege",
+      bmarketing.v1$education == "basic.4y" ~ "noCollege",
+      bmarketing.v1$education == "basic.6y" ~ "noCollege",
+      bmarketing.v1$education == "basic.9y" ~ "noCollege",
+      bmarketing.v1$education == "illiterate" ~ "noCollege",
+      bmarketing.v1$education == "high.school" ~ "noCollege",
+      bmarketing.v1$education == "professional.course" ~ "noCollege",
+      TRUE ~ "College.dg")
+bmarketing.v1$education <- as.factor(bmarketing.v1$education)
+
+str(bmarketing.v1)
+```
+
+```{r}
+ggplot(data=bmarketing.v1, aes(x=education, fill=education))+
+           geom_bar()+
+    theme(axis.text.x=element_text(angle=35,hjust=1))+
+    ggtitle("Recoded Education")
+```
+
+Proporting of reponse variable
+```{r}
+prop.table(table(bmarketing.v1$y))
+```
+
+```{r}
+set.seed(456)
+
+ind <- sample(2, nrow(bmarketing.v1), replace=TRUE, prob = c(0.6,0.4))
+
+ov.train <- bmarketing.v1[ind==1, ]
+
+ov.valid <- bmarketing.v1[ind==2,]
+```
+
+reponse prop in train
+```{r}
+prop.table(table(ov.train$y))
+```
+
+model random forest
+```{r}
+#install.packages("randomForest")
+library(caret)
+library(e1071)
+library(ggplot2)
+library(randomForest)
+```
+
+```{r}
+rftrain <- randomForest(y~ ., data= ov.train)
+confusionMatrix(predict(rftrain, ov.valid), ov.valid$y, positive='1')
+```
+
+Oversampling to test random forest model again
+```{r}
+#install.packages("ROSE")
+library(ROSE)
+```
+
+```{r}
+set.seed(455)
+
+ind <- sample(2, nrow(bmarketing.v1), replace=TRUE, prob = c(0.6,0.4))
+
+ov.train1 <- bmarketing.v1[ind==1, ]
+
+ov.valid1 <- bmarketing.v1[ind==2,]
+
+
+over <- ovun.sample(y~., data=ov.train1, method = "over", N=43652)$data
+
+## prediction with random forest using non balance data
+
+
+rftrain1 <- randomForest(y~., data=ov.train1)
+
+confusionMatrix(predict(rftrain1, ov.valid1), ov.valid1$y, positive='1')
+```
+
+```{r}
+## confusion matrix with balance dataset
+
+rfover <- randomForest(y~., data=over)
+
+confusionMatrix(predict(rfover, ov.valid1), ov.valid1$y, positive='1')
+```
+
+```{r}
+str(ov.train1)
+```
+
+```{r}
+str(ov.valid1)
+```
+
+```{r}
+table(ov.train1$y)
+```
+
+```{r}
+table(over$y)
+```
+
+```{r}
+str(over)
+```
+
+Logistic regression using balance dataset
+```{r}
+train1.glm <- glm(y~., data=ov.train1,family=binomial(link="logit"), na.action = na.exclude)
+summary(train1.glm)
+```
+
+```{r}
+train1.glm.pred <- predict(train1.glm, ov.valid1[, -15], type= "response")
+
+train1.glm.pred2<-ifelse(train1.glm.pred > 0.5, 1, 0)
+
+confusionMatrix(as.factor(train1.glm.pred2), as.factor(ov.valid1$y), positive = '1')
+```
+
+```{r}
+# summary(lregtrain1)
+```
+
+Logistic regression using balance dataset
+```{r}
+# train1.glm <- glm(y~., data=ov.train1,family=binomial(link="logit"), na.action = na.exclude)
+# summary(train1.glm)
+# 
+# train1.glm.pred <- predict(train1.glm, ov.valid1[, -15], type= "response")
+# 
+# train1.glm.pred2<-ifelse(train1.glm.pred > 0.5, 1, 0)
+# 
+# confusionMatrix(as.factor(train1.glm.pred2), as.factor(ov.valid1$y), positive = '1')
+# 
+
+
+
+#############################################
+
+# over.train1.glm <- glm(y~., data=over.1, family=binomial(link="logit"), na.action = na.exclude)
+# 
+# over.train1.glm.pred <- predict(over.train1.glm, ov.valid.1[, -14], type= "response")
+# 
+# over.train1.glm.pred2<-ifelse(over.train1.glm.pred > 0.5, 1, 0)
+# 
+# confusionMatrix(as.factor(over.train1.glm.pred2), as.factor(ov.valid.1$y), positive = '1')
+
+# over$y <- ifelse(over$y == 1, 'yes', 'no')
+# over$y <- as.factor(over$y )
+# 
+# str(over)
+# ov.over.1 <- within(over, rm(default))
+# ov.valid.1 <- within(ov.valid1, rm(default))
+```
+
+Naive Bayes
+```{r}
+set.seed(950)
+
+ind1 <- sample(2, nrow(bmarketing.v1), replace=TRUE, prob = c(0.6,0.4))
+
+nb.train1 <- bmarketing.v1[ind==1, ]
+
+nb.valid1 <- bmarketing.v1[ind==2,]
+
+
+nb.over <- ovun.sample(y~., data=nb.train1, method = "over", N=43652)$data
+
+
+## Naive Bayes with imbalance data
+train.nbayes <- naiveBayes(y~., data= nb.train1)
+
+nb.pred <- predict(train.nbayes, newdata= nb.valid1, type= "class")
+
+confusionMatrix(nb.pred, nb.valid1$y, positive ='1')
+```
+
+```{r}
+dim(nb.train1)
+```
+
+```{r}
+dim(nb.valid1)
+```
+
+```{r}
+dim(nb.over)
+```
+
+```{r}
+length(nb.pred)
+```
+
+```{r}
+length(nb.valid1)
+```
+
+```{r}
+# BM.nb <- naiveBayes(y~ .,data=BMnb.train)
+# BM.nb
+# pred.tr.class <- predict(BM.nb, newdata=BMnb.train, type="class")
+# 
+# confusionMatrix(pred.tr.class, BMnb.train$y)
+```
+
+```{r}
+ov.train.nbayes <- naiveBayes(y~., data= nb.over)
+
+ov.nb.pred <- predict(ov.train.nbayes, newdata= nb.valid1, type= "class")
+
+confusionMatrix(ov.nb.pred, nb.valid1$y, positive ='1')
+```
+
+```{r}
+
+```
